@@ -1,6 +1,18 @@
 
 # Python Web Scraping Tutorial using BeautifulSoup
 
+![soup](https://media.giphy.com/media/jeAJZwhBwyPja/giphy.gif)
+
+## Agenda:  
+    1. Describe webscraping in the context of other data structures
+    2. Identify the basic structure of a webpage  
+    3. Become familiar with the essential object and critical methods of BeautifulSoup  
+    4. Be able to scrape data from a live website  
+
+# Scenario:
+    
+You are doing a project on scooter usage during Chicago's test run.  You have access to an api with data for scooter ridership across four companies for a three month period, but there is no weather data available specific to each zipcode. Luckily, you know how to webscrape, and use BeautifulSoup to gather the publically available data from the National Weather Service.
+
 # Activation
 In order to inspect the structure of a web page, your browser provides a developer tools window.
 You can access it with opt-cmd-i.
@@ -8,6 +20,24 @@ Then, by clicking on the elements button, the user can inspect individual elemen
 
 Take a minute and visit a website, change some text, take a screen shot, and Slack it out.
 
+
+## Context
+
+We have already developed many ways of interacting with data.  We are able to:
+* import csv's and csv-like objects
+* gather data from API's and interact with JSON objects
+* query SQL databases
+
+While the above data structures may be the only source of data for any given project, often you will desire suplemental data.  There is publically available data all over the internet ripe for scraping whether that be artist information data from wikipedia, song lyrics from songlyrics.com, or text of famous books from Project Gutenberg.  Below, we will learn how to navigate HTML and CSS to gather data onto our local computer and turn it into our friendly dataframe objects.
+
+
+
+![scraping](https://media.giphy.com/media/l2JdZJis5RKQSqXFm/giphy.gif)
+
+## Thought Experiment
+
+Consider you are asked to answer a question as to what is the best city to launch a new summer concert. 
+Where might you go to scape relevant data?
 
 ## The components of a web page
 
@@ -171,6 +201,8 @@ We can add classes and ids to our example:
 - Open up index.html in your browser.
 - Open up the inspector using ctrl-shft-j
 - click on the elements tab, and click on an element
+
+Notice the syntax in the main.css file.  A period # refers to an id, and a . refers to a class.
 
 # Activity
 With the Cat Fancier's Fan page as a template, take five minutes to create a fan page of the subject of your choosing.
@@ -445,6 +477,21 @@ Now, we can extract the `title` attribute from the `img` tag. To do this, we jus
 
 ```
 
+
+```python
+#__SOLUTION__
+
+seven_day = soup.find(id='seven-day-forecast-body')
+tombstones = seven_day.find_all(class_='tombstone-container')
+# Using this afternoon, or the first time period available
+title = tombstones[0].find('img')['title']
+```
+
+
+```python
+tombstones
+```
+
 ### Extracting all the information from the page
 Now that we know how to extract each individual piece of information, we can combine our knowledge with css selectors and list comprehensions to extract everything at once.
 
@@ -456,6 +503,16 @@ In the below code, we:
 
 ```python
 # your code here
+```
+
+
+```python
+#__SOLUTION__
+seven_day = soup.find(id='seven-day-forecast-body')
+tombstones = seven_day.find_all(class_='tombstone-container')
+period_names = [tomb.find(class_='period-name') for tomb in tombstones]
+periods = [period.get_text() for period in period_names]
+periods
 ```
 
 As you can see above, our technique gets us each of the period names, in order. Now you can apply the same technique to get the other 3 fields:
@@ -474,6 +531,23 @@ print(descs)
 
 ```python
 # Your code here
+```
+
+
+```python
+#__SOLUTION__
+import re 
+
+short_descs = [tomb.find(class_='short-desc') for tomb in tombstones]
+short_descs = [desc.get_text() for desc in short_descs]
+
+temps = [tomb.find(class_='temp') for tomb in tombstones]
+temps = [temp.get_text() for temp in temps]
+pattern = re.compile('\d\d')
+temps = [int(pattern.search(temp).group()) for temp in temp_text]
+
+descs = [tomb.find('img') for tomb in tombstones]
+descs = [desc['title'] for desc in descs]
 ```
 
 ### Combining our data into a Pandas Dataframe
@@ -535,10 +609,5 @@ is_night
 
 ```python
 weather[is_night]
-
-```
-
-
-```python
 
 ```
