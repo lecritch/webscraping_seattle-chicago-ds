@@ -448,7 +448,7 @@ We now know enough to download the page and start parsing it. Below let's implem
 
 
 ```python
-#your code here
+# your code here
 url = 'https://forecast.weather.gov/MapClick.php?lat=41.8843&lon=-87.6324#.XdPlJUVKg6g'
 request = requests.get(url)
 soup = BeautifulSoup(request.content)
@@ -511,7 +511,7 @@ In the below code, we:
 seven_day = soup.find(id='seven-day-forecast-body')
 tombstones = seven_day.find_all(class_='tombstone-container')
 period_names = [tomb.find(class_='period-name') for tomb in tombstones]
-periods = [period.get_text() for period in period_names]
+periods = [period.get_text() for period in period_names][1:]
 periods
 ```
 
@@ -539,15 +539,16 @@ print(descs)
 import re 
 
 short_descs = [tomb.find(class_='short-desc') for tomb in tombstones]
-short_descs = [desc.get_text() for desc in short_descs]
+short_descs = [desc.get_text() for desc in short_descs][1:]
 
-temps = [tomb.find(class_='temp') for tomb in tombstones]
-temps = [temp.get_text() for temp in temps]
+temps = [tomb.find(class_='temp') for tomb in tombstones][1:]
+temp_text = [temp.get_text() for temp in temps]
 pattern = re.compile('\d\d')
 temps = [int(pattern.search(temp).group()) for temp in temp_text]
 
 descs = [tomb.find('img') for tomb in tombstones]
-descs = [desc['title'] for desc in descs]
+descs = [desc['title'] for desc in descs][1:]
+
 ```
 
 ### Combining our data into a Pandas Dataframe
@@ -577,13 +578,6 @@ weather.temp[0]
 
 
 ```python
-temp_nums = weather["temp"].str.extract(r"(\d+)", expand=False)
-weather["temp_num"] = temp_nums.astype('int')
-temp_nums
-```
-
-
-```python
 weather
 ```
 
@@ -591,23 +585,6 @@ We could then find the mean of all the high and low temperatures:
 
 
 ```python
-weather["temp_num"].mean()
-
-```
-
-We could also only select the rows that happen at night:
-
-
-
-
-```python
-is_night = weather["temp"].str.contains("Low")
-weather["is_night"] = is_night
-is_night
-```
-
-
-```python
-weather[is_night]
+weather["temp"].mean()
 
 ```
