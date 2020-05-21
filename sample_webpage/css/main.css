@@ -1,17 +1,17 @@
 
 p {
-    font-size: 30px;
+    font-size: 50px;
 }
 
 #first_p {
 
-    color: red;
+    color: purple;
 
 }
 
 .not_first_p {
 
-    color: green;
+    color: blue;
 }
 
 #fourth_p {
@@ -19,8 +19,11 @@ p {
     background-color: orange;
 }
 
+#fifth_p {
+    background-color: pink;
+}
 .tiny_text {
-    font-size: 5px;
+    font-size: 3px;
 }
 
 
