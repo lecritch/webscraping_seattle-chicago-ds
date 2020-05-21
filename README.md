@@ -359,7 +359,7 @@ In the below code, we:
 seven_day = soup.find(id='seven-day-forecast-body')
 tombstones = seven_day.find_all(class_='tombstone-container')
 period_names = [tomb.find(class_='period-name') for tomb in tombstones]
-periods = [period.get_text() for period in period_names]
+periods = [period.get_text() for period in period_names][1:]
 periods
 ```
 
@@ -370,15 +370,16 @@ As you can see above, our technique gets us each of the period names, in order. 
 import re 
 
 short_descs = [tomb.find(class_='short-desc') for tomb in tombstones]
-short_descs = [desc.get_text() for desc in short_descs]
+short_descs = [desc.get_text() for desc in short_descs][1:]
 
-temps = [tomb.find(class_='temp') for tomb in tombstones]
-temps = [temp.get_text() for temp in temps]
+temps = [tomb.find(class_='temp') for tomb in tombstones][1:]
+temp_text = [temp.get_text() for temp in temps]
 pattern = re.compile('\d\d')
 temps = [int(pattern.search(temp).group()) for temp in temp_text]
 
 descs = [tomb.find('img') for tomb in tombstones]
-descs = [desc['title'] for desc in descs]
+descs = [desc['title'] for desc in descs][1:]
+
 ```
 
 ### Combining our data into a Pandas Dataframe
@@ -390,7 +391,3 @@ In order to do this, we’ll call the DataFrame class, and pass in each list of 
 We can now do some analysis on the data. For example, we can use a regular expression and the Series.str.extract method to pull out the numeric temperature values:
 
 We could then find the mean of all the high and low temperatures:
-
-We could also only select the rows that happen at night:
-
-
