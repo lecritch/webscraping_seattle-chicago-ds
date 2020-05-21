@@ -448,7 +448,7 @@ We now know enough to download the page and start parsing it. Below let's implem
 
 
 ```python
-#your code here
+# your code here
 url = 'https://forecast.weather.gov/MapClick.php?lat=41.8843&lon=-87.6324#.XdPlJUVKg6g'
 request = requests.get(url)
 soup = BeautifulSoup(request.content)
@@ -540,13 +540,6 @@ weather.temp[0]
 
 
 ```python
-temp_nums = weather["temp"].str.extract(r"(\d+)", expand=False)
-weather["temp_num"] = temp_nums.astype('int')
-temp_nums
-```
-
-
-```python
 weather
 ```
 
@@ -554,23 +547,6 @@ We could then find the mean of all the high and low temperatures:
 
 
 ```python
-weather["temp_num"].mean()
-
-```
-
-We could also only select the rows that happen at night:
-
-
-
-
-```python
-is_night = weather["temp"].str.contains("Low")
-weather["is_night"] = is_night
-is_night
-```
-
-
-```python
-weather[is_night]
+weather["temp"].mean()
 
 ```
